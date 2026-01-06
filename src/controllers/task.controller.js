@@ -1,71 +1,79 @@
 import Task from "../models/Task.js";
+import Tracking from "../models/Tracking.js";
 
-// CREATE TASK
-// export const createTask = async (req, res) => {
-//   console.log("USER FROM TOKEN:", req.user); // 👈 add this
-//   try {
-//     const task = await Task.create(req.body);
-//     res.status(201).json(task);
-//   } catch (err) {
-//     res.status(400).json({ error: err.message });
-//   }
-// };
-export const createTask = async (req, res) => {
-  console.log("USER FROM TOKEN:", req.user); // 👈 add this
-
+/* ================= START TASK ================= */
+export const startTask = async (req, res) => {
   try {
-    const { title, crop, locationName } = req.body;
+    const { taskId, latitude, longitude } = req.body;
 
-    const task = await Task.create({
-      title,
-      crop,
-      locationName,
-      assignedTo: req.user._id,
+    const task = await Task.findByIdAndUpdate(
+      taskId,
+      {
+        status: "started",
+        startLocation: {
+          latitude,
+          longitude,
+          time: new Date(),
+        },
+      },
+      { new: true }
+    );
+
+    await Tracking.create({
+      user: req.user._id,
+      task: taskId,
+      latitude,
+      longitude,
     });
 
-    res.status(201).json(task);
+    res.json(task);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-// GET TASKS FOR USER
-export const getTasksByUser = async (req, res) => {
+/* ================= STOP TASK ================= */
+export const stopTask = async (req, res) => {
   try {
-    const { userId } = req.query;
-    const tasks = await Task.find({ assignedTo: userId }).sort({
-      createdAt: -1,
-    });
-    res.json(tasks);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
+    const { taskId, latitude, longitude } = req.body;
 
-// START TASK
-export const startTask = async (req, res) => {
-  try {
     const task = await Task.findByIdAndUpdate(
-      req.params.id,
-      { status: "started", startTime: new Date() },
+      taskId,
+      {
+        status: "stopped",
+        stopLocation: {
+          latitude,
+          longitude,
+          time: new Date(),
+        },
+      },
       { new: true }
     );
+
+    await Tracking.create({
+      user: req.user._id,
+      task: taskId,
+      latitude,
+      longitude,
+    });
+
     res.json(task);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
 
-// COMPLETE TASK
+/* ================= COMPLETE TASK ================= */
 export const completeTask = async (req, res) => {
   try {
     const task = await Task.findByIdAndUpdate(
-      req.params.id,
-      { status: "completed", endTime: new Date() },
+      req.params.taskId,
+      { status: "completed" },
       { new: true }
     );
+
     res.json(task);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };

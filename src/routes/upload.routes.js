@@ -6,5 +6,6 @@ import { uploadImages } from "../controllers/upload.controller.js";
 const router = express.Router();
 
 router.post("/", auth, upload.array("images", 4), uploadImages);
+router.post("/task-images", protect, uploadImages);
 
 export default router;

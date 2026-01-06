@@ -12,7 +12,9 @@ const router = express.Router();
 
 router.post("/", auth, createTask);
 router.get("/", auth, getTasksByUser);
-router.patch("/:id/start", auth, startTask);
-router.patch("/:id/complete", auth, completeTask);
+
+router.post("/start", protect, startTask);
+router.post("/stop", protect, stopTask);
+router.patch("/:taskId/complete", protect, completeTask);
 
 export default router;

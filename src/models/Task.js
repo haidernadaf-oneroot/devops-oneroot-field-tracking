@@ -2,18 +2,9 @@ import mongoose from "mongoose";
 
 const taskSchema = new mongoose.Schema(
   {
-    title: {
-      type: String,
-      required: true,
-    },
-    crop: {
-      type: String,
-      required: true,
-    },
-    locationName: {
-      type: String,
-      required: true,
-    },
+    title: String,
+    crop: String,
+    locationName: String,
 
     assignedTo: {
       type: mongoose.Schema.Types.ObjectId,
@@ -37,6 +28,11 @@ const taskSchema = new mongoose.Schema(
       latitude: Number,
       longitude: Number,
       time: Date,
+    },
+
+    images: {
+      type: [String],
+      default: [],
     },
   },
   { timestamps: true }
