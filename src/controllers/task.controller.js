@@ -72,13 +72,16 @@ export const startTask = async (req, res) => {
   }
 };
 
+// controllers/task.controller.js
+
 /* ================= STOP TASK ================= */
 export const stopTask = async (req, res) => {
   try {
-    const { taskId, latitude, longitude } = req.body;
+    const { taskId } = req.params; // ← Use params, not body
+    const { latitude, longitude } = req.body;
 
-    if (!taskId || !latitude || !longitude) {
-      return res.status(400).json({ message: "Missing fields" });
+    if (!latitude || !longitude) {
+      return res.status(400).json({ message: "Missing location data" });
     }
 
     const task = await Task.findByIdAndUpdate(
@@ -94,6 +97,10 @@ export const stopTask = async (req, res) => {
       { new: true }
     );
 
+    if (!task) {
+      return res.status(404).json({ message: "Task not found" });
+    }
+
     await Tracking.create({
       user: req.user._id,
       task: taskId,
@@ -101,7 +108,7 @@ export const stopTask = async (req, res) => {
       longitude,
     });
 
-    res.json(task);
+    res.json({ message: "Stop location saved", task });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -110,13 +117,19 @@ export const stopTask = async (req, res) => {
 /* ================= COMPLETE TASK ================= */
 export const completeTask = async (req, res) => {
   try {
+    const { taskId } = req.params;
+
     const task = await Task.findByIdAndUpdate(
-      req.params.taskId,
+      taskId,
       { status: "completed" },
       { new: true }
     );
 
-    res.json(task);
+    if (!task) {
+      return res.status(404).json({ message: "Task not found" });
+    }
+
+    res.json({ message: "Task completed", task });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

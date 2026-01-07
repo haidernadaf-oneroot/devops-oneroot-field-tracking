@@ -12,8 +12,14 @@ const router = express.Router();
 
 router.get("/", protect, getTasks);
 router.post("/", protect, createTask);
-router.post("/start", protect, startTask);
-router.post("/stop", protect, stopTask);
+
+// ✅ START
+router.patch("/:taskId/start", protect, startTask);
+
+// ✅ STOP
+router.patch("/:taskId/stop", protect, stopTask);
+
+// ✅ COMPLETE
 router.patch("/:taskId/complete", protect, completeTask);
 
 export default router;
