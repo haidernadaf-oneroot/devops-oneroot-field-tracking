@@ -1,26 +1,15 @@
 import Task from "../models/Task.js";
 
-export const uploadImages = async (req, res) => {
-  try {
-    const { taskId } = req.body;
+export const uploadTaskImages = async (req, res) => {
+  const { taskId } = req.params;
 
-    if (!req.files || req.files.length === 0) {
-      return res.status(400).json({ message: "No images uploaded" });
-    }
+  const urls = req.files.map((f) => f.path);
 
-    const images = req.files.map((file) => file.path);
+  const task = await Task.findByIdAndUpdate(
+    taskId,
+    { $push: { images: { $each: urls } } },
+    { new: true }
+  );
 
-    const task = await Task.findByIdAndUpdate(
-      taskId,
-      { $push: { images: { $each: images } } },
-      { new: true }
-    );
-
-    res.status(201).json({
-      message: "Images uploaded successfully",
-      images: task.images,
-    });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+  res.json({ images: urls, task });
 };
