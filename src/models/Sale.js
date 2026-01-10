@@ -1,8 +1,19 @@
 import mongoose from "mongoose";
 
+// const productSchema = new mongoose.Schema({
+//   crop: String,
+//   product: String,
+//   qty: Number,
+//   price: Number,
+//   total: Number,
+// });
+
 const productSchema = new mongoose.Schema({
-  crop: String,
-  product: String,
+  product: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Product", // ✅ reference
+    required: true,
+  },
   qty: Number,
   price: Number,
   total: Number,

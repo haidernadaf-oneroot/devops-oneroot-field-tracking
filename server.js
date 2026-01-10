@@ -1,5 +1,5 @@
-import dotenv from "dotenv";
-dotenv.config(); // 🔑 MUST BE FIRST
+import pushenv from "pushenv";
+pushenv.config(); // 🔑 MUST BE FIRST
 
 import app from "./src/app.js";
 import { connectDB } from "./src/config/db.js";

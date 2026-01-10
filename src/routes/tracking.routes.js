@@ -3,11 +3,11 @@ import {
   saveLocation,
   getTaskTracking,
 } from "../controllers/tracking.controller.js";
-import auth from "../middleware/authMiddleware.js";
+import { protect } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
-router.post("/", auth, saveLocation);
-router.get("/:taskId", auth, getTaskTracking);
+router.post("/", protect, saveLocation);
+router.get("/:taskId", protect, getTaskTracking);
 
 export default router;

@@ -10,6 +10,7 @@ import saleRoutes from "./routes/sale.routes.js";
 import uploadRoutes from "./routes/upload.routes.js";
 import reportsRouter from "./routes/reports.routes.js";
 import productRouter from "./routes/product.routes.js";
+import adminRoutes from "./routes/admin.routes.js";
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.use("/api/sales", saleRoutes);
 app.use("/api/upload", uploadRoutes);
 app.use("/api/reports", reportsRouter);
 app.use("/api/products", productRouter);
+app.use("/api/admin", adminRoutes);
 
 app.get("/", (req, res) => {
   res.send("Field Tracking Backend is running 🚜");

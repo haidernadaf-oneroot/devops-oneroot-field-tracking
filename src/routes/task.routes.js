@@ -5,6 +5,7 @@ import {
   startTask,
   stopTask,
   completeTask,
+  getTaskWithSales,
 } from "../controllers/task.controller.js";
 import { protect } from "../middleware/auth.middleware.js";
 
@@ -21,5 +22,7 @@ router.patch("/:taskId/stop", protect, stopTask);
 
 // ✅ COMPLETE
 router.patch("/:taskId/complete", protect, completeTask);
+
+router.get("/:id/details", protect, getTaskWithSales);
 
 export default router;
